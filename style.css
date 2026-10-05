@@ -1,0 +1,508 @@
+/*
+Theme Name: 115theme
+Theme URI: https://www.115.la/
+Author: 115la
+Author URI: https://www.115.la/
+Description: 115啦网址导航主题
+Version: 5.86
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: 115theme
+*/
+
+/* Footer tools */
+.io-footer-tools {
+    position: fixed;
+    bottom: 30px;
+    z-index: 99;
+}
+.tools-left {
+    left: 20px;
+}
+.tools-right {
+    right: 20px;
+}
+.btn-tools {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--background-color-2, #fff);
+    box-shadow: 0 2px 12px rgba(0,0,0,.1);
+    color: var(--text-color-1, #333);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all .3s;
+    text-decoration: none;
+}
+.btn-tools:hover {
+    background: var(--primary-color, #8618db);
+    color: #fff;
+}
+.go-to-up {
+    opacity: 0;
+    visibility: hidden;
+    transition: all .3s;
+}
+.go-to-up.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Footer */
+.main-footer {
+    margin-top: 30px;
+    background: var(--background-color-2, #fff);
+    border-top: 1px solid var(--border-color, #eee);
+}
+.footer-stick {
+    flex-shrink: 0;
+}
+.footer-links a {
+    margin-right: 15px;
+    color: var(--text-color-2, #666);
+    text-decoration: none;
+}
+.footer-links a:hover {
+    color: var(--primary-color, #8618db);
+}
+.friend-link a {
+    margin-right: 12px;
+    color: var(--text-color-2, #666);
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 2;
+}
+.friend-link a:hover {
+    color: var(--primary-color, #8618db);
+}
+.footer-copyright {
+    width: 100%;
+    text-align: center;
+    color: var(--text-color-3, #999);
+    padding: 15px 0;
+    border-top: 1px solid var(--border-color, #eee);
+}
+.footer-copyright a {
+    color: var(--text-color-2, #666);
+    text-decoration: none;
+}
+
+/* Sidebar sticky */
+.theiaStickySidebar {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* Search box focus */
+.search-form .search-input:focus {
+    border-color: var(--primary-color, #8618db);
+    outline: none;
+}
+
+/* Auto ad url */
+.auto-ad-url .ad-url-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,.1);
+}
+
+/* List select active */
+.list-select.active {
+    color: var(--primary-color, #8618db);
+    font-weight: 500;
+}
+.list-select.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background: var(--primary-color, #8618db);
+    border-radius: 1px;
+}
+
+/* Tags */
+.tags .tag:hover {
+    background: var(--primary-color, #8618db);
+    color: #fff;
+}
+
+/* Site card hover */
+.sites-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+.sites-item:hover .go-btn {
+    opacity: 1;
+    right: 12px;
+}
+
+/* Dark mode toggle */
+.switch-dark-mode .mode-ico {
+    transition: transform .3s;
+}
+.switch-dark-mode:hover .mode-ico {
+    transform: rotate(180deg);
+}
+
+/* QR code tooltip */
+.qr-img .tooltip-inner {
+    padding: 5px;
+    background: #fff;
+}
+
+/* Mobile menu toggle */
+.btn-show-side {
+    display: none;
+}
+@media (max-width: 768px) {
+    .btn-show-side {
+        display: flex;
+    }
+}
+
+/* Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Text ellipsis */
+.text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.text-ellipsis-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* About website sidebar */
+.io-widget-about-website .about-cover {
+    background: linear-gradient(135deg, #8618db, #d711ff);
+    border-radius: var(--main-radius, 12px);
+    color: #fff;
+}
+.io-widget-about-website .about-cover a {
+    color: #fff;
+}
+.io-widget-about-website .avatar-md {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #fff;
+    padding: 2px;
+}
+.io-widget-about-website .avatar-md img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.io-widget-about-website .social-icon .col {
+    text-align: center;
+}
+.io-widget-about-website .social-icon a {
+    display: inline-block;
+    font-size: 20px;
+    transition: transform .3s;
+}
+.io-widget-about-website .social-icon a:hover {
+    transform: scale(1.2);
+}
+.io-widget-about-website .about-meta .posts-row {
+    display: flex;
+    gap: 8px;
+}
+.io-widget-about-website .about-meta .col-1a,
+.io-widget-about-website .about-meta .col-3a {
+    flex: 1;
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: 8px;
+    background: rgba(134, 24, 219, 0.05);
+}
+.io-widget-about-website .about-meta .text-xl {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--primary-color, #8618db);
+}
+.io-widget-about-website .about-meta .text-ss {
+    font-size: 11px;
+    color: var(--text-color-2, #666);
+}
+
+/* Ranking sidebar */
+.io-widget-ranking-list .range-nav {
+    display: flex;
+    padding: 0 15px;
+    border-bottom: 1px solid var(--border-color, #eee);
+}
+.io-widget-ranking-list .range-nav a {
+    padding: 10px 15px;
+    color: var(--text-color-2, #666);
+    text-decoration: none;
+    font-size: 14px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    cursor: pointer;
+}
+.io-widget-ranking-list .range-nav a.active {
+    color: var(--primary-color, #8618db);
+    border-bottom-color: var(--primary-color, #8618db);
+    font-weight: 500;
+}
+.io-widget-ranking-list .posts-item {
+    position: relative;
+    padding-left: 28px;
+}
+.io-widget-ranking-list .rank-num {
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    font-size: 12px;
+    border-radius: 4px;
+    background: #f0f0f0;
+    color: #999;
+}
+.io-widget-ranking-list .rank-num.font-bold {
+    background: var(--primary-color, #8618db);
+    color: #fff;
+}
+
+/* Add to favorites */
+.add-to-favorites {
+    position: relative;
+}
+.add-to-favorites .add-favorites {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    text-decoration: none;
+    cursor: grab;
+}
+
+/* muted-bg */
+.muted-bg {
+    background: transparent;
+}
+.br-md {
+    border-radius: 8px;
+}
+.no-go-ico .togo {
+    display: none;
+}
+
+/* =====================================================================
+   5.82 软件下载页 1:1 对齐目标站：Tooltip / 轮播 / 详情头 / 评论 / 弹窗
+   ===================================================================== */
+
+/* 轻量 Tooltip（主题未加载 bootstrap JS，由 functions.php 兼容层驱动） */
+.io-tooltip {
+    position: absolute;
+    z-index: 1080;
+    display: none;
+    max-width: 260px;
+    font-size: .8rem;
+    line-height: 1.4;
+    opacity: 0;
+    transition: opacity .15s;
+    pointer-events: none;
+}
+.io-tooltip.show { display: block; opacity: 1; }
+.io-tooltip-inner {
+    background: rgba(33, 37, 41, .92);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-align: center;
+    word-break: break-word;
+}
+.io-tooltip-inner a { color: #8fc1ff; }
+.io-tooltip-arrow {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: rgba(33, 37, 41, .92);
+    transform: rotate(45deg);
+}
+.placement-top .io-tooltip-arrow { bottom: -4px; left: 50%; margin-left: -4px; }
+.placement-bottom .io-tooltip-arrow { top: -4px; left: 50%; margin-left: -4px; }
+.placement-left .io-tooltip-arrow { right: -4px; top: 50%; margin-top: -4px; }
+.placement-right .io-tooltip-arrow { left: -4px; top: 50%; margin-top: -4px; }
+.io-tooltip img { display: block; border-radius: 4px; }
+
+/* 超宽屏：app 信息区向两侧延展（对应目标站 xxxl 断点负边距） */
+@media (min-width: 1600px) {
+    .mx-xxxl-n5 {
+        margin-left: -3rem !important;
+        margin-right: -3rem !important;
+    }
+}
+
+/* ===== app 详情头部 ===== */
+.app-info h1 { line-height: 1.4; word-break: break-word; }
+.app-info h1 .text-md {
+    font-weight: 400;
+    color: var(--muted-color);
+    margin-left: 8px;
+    font-size: .82em;
+}
+.app-nature .badge { font-weight: 400; }
+.app-nature .badge i { font-style: normal; }
+.app-info > p { color: var(--body-color); margin-bottom: 1rem; }
+.app-info .cursor-pointer { cursor: pointer; }
+.app-info .table-div a { color: var(--body-color); }
+
+/* 信息表（软件/网址/书籍详情通用） */
+.table-div .table-row { display: flex; padding: 4px 0; flex-wrap: wrap; }
+.table-div .table-title { white-space: nowrap; color: var(--muted-color); padding-right: 10px; }
+.table-div .table-value { flex: 1; min-width: 0; }
+
+/* 收藏 / 点赞激活态（main.min.js 只负责切换 liked 类与图标 data-class） */
+.io-posts-like.liked,
+.io-posts-like.liked i,
+.io-posts-like.liked small { color: var(--theme-color); }
+
+/* ===== 截图轮播 ===== */
+.screenshot-carousel { max-width: 420px; }
+.screenshot-carousel .img_wrapper img { max-height: 420px; object-fit: contain; margin: 0 auto; }
+.screenshot-carousel .carousel-control-prev,
+.screenshot-carousel .carousel-control-next { width: 10%; opacity: .85; color: #fff; }
+.screenshot-carousel .carousel-control-prev:before,
+.screenshot-carousel .carousel-control-next:before {
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    top: calc(50% - 20px);
+    left: calc(50% - 20px);
+    border-radius: 20px;
+    z-index: -1;
+    background-color: rgba(0, 0, 0, .2);
+}
+@media (max-width: 1199.98px) {
+    .screenshot-carousel { margin-bottom: 24px; }
+}
+
+/* ===== 空状态 ===== */
+.nothing-box { text-align: center; padding: 34px 0 10px; }
+.nothing-box .nothing-svg { max-width: 220px; width: 62%; height: auto; }
+.nothing-box .nothing-msg { margin-top: 8px; }
+
+/* ===== 下载弹窗 ===== */
+.down_btn_list .row { align-items: center; padding: 5px 0; }
+.down_btn_list .copy-data { white-space: nowrap; }
+.modal-header-simple { position: relative; overflow: hidden; }
+.modal-content.overflow-hidden { overflow: hidden; }
+
+/* ===== 侧栏标签云按钮 ===== */
+.io-widget-tag-cloud .btn { min-width: 72px; margin: 0; }
+
+/* 热门条广告 Ad 角标 */
+.auto-ad-name .ad-badge {
+    display: inline-block;
+    background: var(--theme-color);
+    color: #fff;
+    font-size: 10px;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 3px;
+    margin-left: 6px;
+    transform: translateY(-1px);
+}
+
+/* 评论楼中楼分隔线 */
+#comments .comment-list .children .children {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(136, 136, 136, .12);
+}
+
+/* 相关软件卡平台图标间距 */
+.style-app-max .app-platform i { margin-right: 6px; }
+
+/* 正文内容图片自适应 */
+.panel-body.single img { max-width: 100%; height: auto; }
+
+/* ===== 轻量灯箱（替代未加载的 fancybox JS） ===== */
+.io-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1070;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5vh 5vw;
+    background: rgba(0, 0, 0, .85);
+    opacity: 0;
+    transition: opacity .2s;
+    cursor: zoom-out;
+}
+.io-lightbox.show { opacity: 1; }
+.io-lightbox-stage { position: relative; max-width: 100%; max-height: 82vh; display: flex; align-items: center; justify-content: center; }
+.io-lightbox-img {
+    max-width: 90vw;
+    max-height: 82vh;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, .5);
+    cursor: default;
+}
+.io-lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .15);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background .2s;
+}
+.io-lightbox-nav:hover { background: rgba(255, 255, 255, .35); }
+.io-lightbox-prev { left: -60px; }
+.io-lightbox-next { right: -60px; }
+.io-lightbox-caption { color: #ddd; font-size: .85rem; margin-top: 14px; text-align: center; max-width: 90vw; }
+.io-lightbox-close {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .15);
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+}
+.io-lightbox-close:hover { background: rgba(255, 255, 255, .35); }
+@media (max-width: 575.98px) {
+    .io-lightbox-prev { left: 6px; }
+    .io-lightbox-next { right: 6px; }
+}
