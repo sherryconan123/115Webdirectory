@@ -1,5 +1,5 @@
 <?php
-define('THEME_VERSION', '5.86');
+define('THEME_VERSION', '5.92');
 
 function theme_enqueue_scripts() {
     wp_enqueue_style('bootstrap-css', get_template_directory_uri() . '/css/bootstrap.min.css', array(), THEME_VERSION);
@@ -1789,6 +1789,7 @@ function theme_settings_init() {
     add_settings_field('theme_qq_service', __('QQ客服链接', '115theme'), 'theme_sites_text_callback', 'theme_settings', 'theme_settings_tools', array('key' => 'theme_qq_service', 'desc' => '填写后右侧工具条显示QQ客服按钮，如 https://wpa.qq.com/msgrd?v=3&uin=123456&site=qq&menu=yes，留空不显示'));
     add_settings_field('theme_weather', __('天气组件', '115theme'), 'theme_weather_field_callback', 'theme_settings', 'theme_settings_tools');
     add_settings_field('theme_ai', __('AI助手', '115theme'), 'theme_ai_field_callback', 'theme_settings', 'theme_settings_tools');
+    add_settings_field('theme_footer_statistics', __('流量统计代码', '115theme'), 'theme_statistics_field_callback', 'theme_settings', 'theme_settings_tools');
 }
 add_action('admin_init', 'theme_settings_init');
 
@@ -1809,6 +1810,10 @@ function theme_settings_sanitize($input) {
         }
         if (isset($input['theme_ai_api_key'])) {
             $input['theme_ai_api_key'] = trim($input['theme_ai_api_key']);
+        }
+        if (isset($input['theme_footer_statistics'])) {
+            // 统计代码需保留 <script> 等原始标签，仅去除首尾空白
+            $input['theme_footer_statistics'] = trim($input['theme_footer_statistics']);
         }
     }
     return $input;
@@ -1845,6 +1850,15 @@ function theme_ai_field_callback() {
     <p class="description">API 密钥</p>
     <input type="text" class="regular-text" name="theme_settings[theme_ai_model]" value="<?php echo esc_attr($model); ?>" placeholder="gpt-4o-mini">
     <p class="description">模型名称，如 gpt-4o-mini、deepseek-chat、qwen-plus</p>
+    <?php
+}
+
+function theme_statistics_field_callback() {
+    $options = get_option('theme_settings');
+    $code = $options['theme_footer_statistics'] ?? '';
+    ?>
+    <textarea class="large-text code" rows="6" name="theme_settings[theme_footer_statistics]" placeholder="粘贴百度统计、51LA、CNZZ 等统计代码（含 <script> 标签）"><?php echo esc_textarea($code); ?></textarea>
+    <p class="description">代码将原样输出到全站所有页面的底部（body 结束前），留空则不输出。</p>
     <?php
 }
 
@@ -2944,7 +2958,7 @@ function theme_hotlist_callback() {
     $raw = implode("\n", $lines);
     echo '<label><input type="checkbox" name="theme_settings[theme_hotlist_on]" value="1" ' . checked($on, 1, false) . '> 启用热门榜单模块（首页侧栏）</label>';
     echo '<textarea name="theme_settings[theme_hotlist_sources]" class="large-text code" rows="6" placeholder="每行一个：名称|接口地址（可用 || 分隔多个备用接口，自动切换）">' . esc_textarea($raw) . '</textarea>';
-    echo '<p class="description">每行格式：名称|接口地址。一个来源可配置多个接口，用 <code>||</code> 分隔，主接口失败时自动尝试下一个。数据缓存1小时，全部失败则5分钟内不再重复请求。默认使用官方 115.la 提供的热点 API（百度/微博/抖音）。</p>';
+    echo '<p class="description">每行格式：名称|接口地址。一个来源可配置多个接口，用 <code>||</code> 分隔，主接口失败时自动尝试下一个。数据缓存1小时，过期后先显示旧数据并后台自动刷新，全部失败则5分钟内不再重复请求。默认使用官方 115.la 提供的热点 API（百度/微博/抖音）。</p>';
 }
 
 /**
@@ -3169,6 +3183,83 @@ function theme_render_hotlist_widget() {
                 </div>
             </div>
             <?php endforeach; ?>
+        </div>
+    </div>
+    <?php
+}
+
+/**
+ * 侧栏「关于本站」卡片（与首页/搜索页同款，排行榜页侧栏第一个 widget）
+ */
+function theme_render_about_website_widget() {
+    $default_cover = 'https://cdn2.iocdn.cc/gh/owen0o0/ioStaticResources@master/banner/wHoOcfQGhqvlUkd.jpg';
+    $about_cover = get_option('theme_settings')['theme_about_cover'] ?? $default_cover;
+    $cover_class = 'about-cover bg-image media-bg p-2';
+    $cover_attr = '';
+    if (!empty($about_cover)) {
+        $cover_attr = ' data-bg="' . esc_url($about_cover) . '"';
+    } else {
+        $cover_class .= ' fx-bg';
+    }
+    ?>
+    <div class="card io-sidebar-widget io-widget-about-website">
+        <div class="about-website-body">
+            <div class="<?php echo esc_attr($cover_class); ?>"<?php echo $cover_attr; ?>>
+                <div class="d-flex align-items-center">
+                    <div class="avatar-md">
+                        <img class="avatar lazy unfancybox" src="https://ui-avatars.com/api/?name=<?php echo urlencode(get_bloginfo('name')); ?>&background=8618db&color=fff&size=64" height="auto" width="auto" alt="<?php bloginfo('name'); ?>">
+                    </div>
+                    <div class="flex-fill overflow-hidden ml-2">
+                        <div class="text-md"><?php bloginfo('name'); ?></div>
+                        <div class="text-xs line1 mt-1"><?php bloginfo('description'); ?></div>
+                    </div>
+                    <div class="add-to-favorites text-sm">
+                        <a href="javascript:;" class="add-favorites" data-toggle="tooltip" title="按住拖入收藏夹">
+                            <i class="iconfont icon-add"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="row no-gutters social-icon mt-2">
+                    <?php
+                    $social_options = get_option('theme_settings');
+                    $social_wechat = $social_options['theme_social_wechat'] ?? '';
+                    $social_qq = $social_options['theme_social_qq'] ?? '';
+                    $social_weibo = $social_options['theme_social_weibo'] ?? '';
+                    $social_github = $social_options['theme_social_github'] ?? '';
+                    if ($social_wechat) : ?>
+                    <div class="col"><a href="javascript:;" data-toggle="tooltip" data-placement="top" data-html="true" title='<img src="<?php echo esc_url($social_wechat); ?>" height="100" width="100">' rel="external nofollow"><i class="iconfont icon-wechat icon-lg"></i></a></div>
+                    <?php endif;
+                    if ($social_qq) : ?>
+                    <div class="col"><a href="<?php echo esc_url($social_qq); ?>" target="_blank" data-toggle="tooltip" data-placement="top" title="QQ" rel="external nofollow"><i class="iconfont icon-qq icon-lg"></i></a></div>
+                    <?php endif;
+                    if ($social_weibo) : ?>
+                    <div class="col"><a href="<?php echo esc_url($social_weibo); ?>" target="_blank" data-toggle="tooltip" data-placement="top" title="微博" rel="external nofollow"><i class="iconfont icon-weibo icon-lg"></i></a></div>
+                    <?php endif;
+                    if ($social_github) : ?>
+                    <div class="col"><a href="<?php echo esc_url($social_github); ?>" target="_blank" data-toggle="tooltip" data-placement="top" title="GitHub" rel="external nofollow"><i class="iconfont icon-github icon-lg"></i></a></div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="about-meta mt-2">
+                <div class="posts-row">
+                    <div class="col-1a tips-box vc-l-theme btn-outline bg-no-a">
+                        <div class="text-xl"><?php echo theme_get_total_sites(); ?></div>
+                        <div class="text-ss">收录网址</div>
+                    </div>
+                    <div class="col-3a tips-box vc-l-blue btn-outline bg-no-a">
+                        <div class="text-xl"><?php echo theme_get_total_posts(); ?></div>
+                        <div class="text-ss">收录文章</div>
+                    </div>
+                    <div class="col-3a tips-box vc-l-green btn-outline bg-no-a">
+                        <div class="text-xl"><?php echo theme_get_total_apps(); ?></div>
+                        <div class="text-ss">收录软件</div>
+                    </div>
+                    <div class="col-3a tips-box vc-l-red btn-outline bg-no-a">
+                        <div class="text-xl"><?php echo theme_get_total_books(); ?></div>
+                        <div class="text-ss">收录书籍</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <?php
@@ -3416,14 +3507,62 @@ function theme_ajax_hot_list() {
         delete_transient($cache_key);
         delete_transient($fail_key);
     }
-    $items = get_transient($cache_key);
-    if ($items !== false) {
-        wp_send_json_success(array('items' => $items));
+    $cached = get_transient($cache_key);
+    $has_cache = is_array($cached) && !empty($cached['items']);
+    if (!$refresh && $has_cache) {
+        $age = time() - (int) ($cached['time'] ?? 0);
+        // 缓存新鲜（1小时内）直接返回
+        if ($age < HOUR_IN_SECONDS) {
+            wp_send_json_success(array('items' => $cached['items']));
+        }
+        // 缓存过期不久：先返回旧数据保证秒开，同时后台静默刷新缓存
+        if ($age < 6 * HOUR_IN_SECONDS) {
+            if (!wp_next_scheduled('theme_hot_list_bg_refresh', array($index))) {
+                wp_schedule_single_event(time(), 'theme_hot_list_bg_refresh', array($index));
+                spawn_cron();
+            }
+            wp_send_json_success(array('items' => $cached['items']));
+        }
+        // 缓存过旧（如站点 WP-Cron 失效），走同步抓取
     }
     // 若短时间内全部失败过，直接返回失败避免反复请求
-    if (get_transient($fail_key)) {
+    if (!$refresh && !$has_cache && get_transient($fail_key)) {
         wp_send_json_error(array('msg' => '接口暂时不可用，请稍后刷新'));
     }
+    $items = theme_hot_list_fetch($urls, $refresh);
+    if (empty($items)) {
+        // 全部接口失败：有旧缓存则返回旧数据兜底，否则缓存失败状态 5 分钟
+        if ($has_cache) {
+            wp_send_json_success(array('items' => $cached['items']));
+        }
+        set_transient($fail_key, 1, 5 * MINUTE_IN_SECONDS);
+        wp_send_json_error(array('msg' => '暂无数据，请稍后刷新'));
+    }
+    set_transient($cache_key, array('time' => time(), 'items' => $items), 7 * DAY_IN_SECONDS);
+    wp_send_json_success(array('items' => $items));
+}
+
+/**
+ * 后台静默刷新热榜缓存（WP-Cron 单发事件，缓存过期时由 AJAX 触发）
+ */
+add_action('theme_hot_list_bg_refresh', 'theme_hot_list_bg_refresh');
+function theme_hot_list_bg_refresh($index) {
+    $sources = theme_hotlist_sources();
+    if (!isset($sources[$index])) return;
+    $urls = array_values(array_filter(array_map('trim', preg_split('/\|\|/', $sources[$index][1]))));
+    if (empty($urls)) return;
+    $items = theme_hot_list_fetch($urls, false);
+    // 刷新失败保留旧缓存，成功才覆盖
+    if (!empty($items)) {
+        $cache_key = 'theme_hotlist_' . md5($sources[$index][1]);
+        set_transient($cache_key, array('time' => time(), 'items' => $items), 7 * DAY_IN_SECONDS);
+    }
+}
+
+/**
+ * 抓取热榜数据：多接口容错逐个尝试，返回至多 10 条，全部失败返回空数组
+ */
+function theme_hot_list_fetch($urls, $refresh = false) {
     $items = array();
     $site_url = home_url('/');
     foreach ($urls as $url) {
@@ -3475,13 +3614,7 @@ function theme_ajax_hot_list() {
             break;
         }
     }
-    if (empty($items)) {
-        // 全部接口失败，缓存失败状态 5 分钟，避免反复请求
-        set_transient($fail_key, 1, 5 * MINUTE_IN_SECONDS);
-        wp_send_json_error(array('msg' => '暂无数据，请稍后刷新'));
-    }
-    set_transient($cache_key, $items, HOUR_IN_SECONDS);
-    wp_send_json_success(array('items' => $items));
+    return $items;
 }
 
 add_action('wp_ajax_theme_hot_posts', 'theme_ajax_hot_posts');
@@ -5008,43 +5141,96 @@ function theme_get_ranking_items($type = 'sites', $range = 'today', $page = 1, $
 }
 
 /**
- * 排行榜单条条目（与目标站 .posts-item.sites-item.style-sites-default 结构一致）
+ * 排行榜主列表单条卡片（对标目标站 /rankings：四种类型各自的紧凑卡片样式，无排名数字，新窗口打开）
  */
-function theme_render_ranking_row($post, $rank, $type, $views = 0) {
+function theme_render_ranking_row($post, $type) {
     $pid = $post->ID;
-    $fav_url = ($type === 'sites' && function_exists('theme_get_local_favicon')) ? theme_get_local_favicon($pid) : '';
-    if (has_post_thumbnail($pid)) {
-        $icon = get_the_post_thumbnail_url($pid, 'thumbnail');
-    } elseif ($fav_url) {
-        $icon = $fav_url;
-    } else {
-        $icon = 'https://ui-avatars.com/api/?name=' . urlencode($post->post_title) . '&background=random&color=fff&size=64';
-    }
-    $rank_class = $rank === 1 ? ' vc-l-red' : ($rank === 2 ? ' vc-l-yellow' : ($rank === 3 ? ' vc-l-purple' : ''));
     $permalink = get_permalink($pid);
-    $site_url = ($type === 'sites') ? theme_get_site_url($pid) : '';
-    ?>
-    <div class="posts-item sites-item d-flex style-sites-default post-<?php echo (int) $pid; ?>">
-        <span class="hotapi-rank rank-num <?php echo esc_attr($rank_class); ?> d-flex align-items-center justify-content-center mr-2"><?php echo (int) $rank; ?></span>
-        <a href="<?php echo esc_url($permalink); ?>" data-id="<?php echo (int) $pid; ?>"<?php echo $site_url ? ' data-url="' . esc_url($site_url) . '"' : ''; ?> class="sites-body flex-fill" title="<?php echo esc_attr($post->post_title); ?>">
+    $title = get_the_title($post);
+    $thumb = has_post_thumbnail($pid)
+        ? get_the_post_thumbnail_url($pid, 'thumbnail')
+        : 'https://ui-avatars.com/api/?name=' . urlencode($title) . '&background=random&color=fff&size=96';
+
+    if ($type === 'post') {
+        ?>
+        <div class="posts-item post-item d-flex style-post-min-sm post-<?php echo (int) $pid; ?> ajax-item">
             <div class="item-header">
                 <div class="item-media">
-                    <div class="blur-img-bg lazy-bg"<?php echo $fav_url ? ' data-bg="' . esc_url($fav_url) . '"' : ''; ?>></div>
-                    <div class="item-image">
-                        <img class="fill-cover sites-icon lazy unfancybox" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiPjwvc3ZnPg==" data-src="<?php echo esc_url($icon); ?>" height="auto" width="auto" alt="<?php echo esc_attr($post->post_title); ?>">
-                    </div>
+                    <a class="item-image" href="<?php echo esc_url($permalink); ?>" target="_blank">
+                        <img class="fill-cover" src="<?php echo esc_url($thumb); ?>" height="auto" width="auto" alt="<?php echo esc_attr($title); ?>">
+                    </a>
+                </div>
+            </div>
+            <div class="item-body d-flex flex-column flex-fill">
+                <h3 class="item-title line2"><a href="<?php echo esc_url($permalink); ?>" title="<?php echo esc_attr($title); ?>" target="_blank"><?php echo esc_html($title); ?></a></h3>
+                <div class="mt-auto">
+                    <div class="line1 text-muted text-sm d-none d-md-block"><?php echo esc_html(wp_trim_words($post->post_content, 24)); ?></div>
+                </div>
+            </div>
+        </div>
+        <?php
+    } elseif ($type === 'book') {
+        ?>
+        <div class="posts-item book-item d-flex style-book-v-card post-<?php echo (int) $pid; ?> ajax-item">
+            <div class="item-header">
+                <div class="item-media">
+                    <a class="item-image" href="<?php echo esc_url($permalink); ?>" target="_blank">
+                        <img class="fill-cover" src="<?php echo esc_url($thumb); ?>" height="auto" width="auto" alt="<?php echo esc_attr($title); ?>">
+                    </a>
+                </div>
+            </div>
+            <div class="item-body flex-fill">
+                <h3 class="item-title line1"><a href="<?php echo esc_url($permalink); ?>" title="<?php echo esc_attr($title); ?>" target="_blank"><?php echo esc_html($title); ?></a></h3>
+                <div class="line1 text-muted text-xs mt-1"><?php echo esc_html(wp_trim_words($post->post_content, 18)); ?></div>
+            </div>
+        </div>
+        <?php
+    } elseif ($type === 'app') {
+        $version = function_exists('theme_get_app_version') ? theme_get_app_version($pid) : '';
+        ?>
+        <div class="posts-item app-item d-flex style-app-card post-<?php echo (int) $pid; ?> no-padding ajax-item">
+            <div class="item-header">
+                <div class="item-media" style="background-image:linear-gradient(130deg,#f9f9f9,#e8e8e8)">
+                    <a class="item-image" href="<?php echo esc_url($permalink); ?>" target="_blank" style="transform:scale(83%)">
+                        <img class="fill-cover" src="<?php echo esc_url($thumb); ?>" height="auto" width="auto" alt="<?php echo esc_attr($title); ?>">
+                    </a>
                 </div>
             </div>
             <div class="item-body overflow-hidden d-flex flex-column flex-fill">
-                <h3 class="item-title line1"><b><?php echo esc_html($post->post_title); ?></b></h3>
-                <div class="line1 text-muted text-xs"><?php echo esc_html(wp_trim_words($post->post_content, 16)); ?></div>
-                <div class="meta-ico text-muted text-xs">
-                    <span class="meta-view"><i class="iconfont icon-chakan-line"></i><?php echo esc_html(theme_format_num($views)); ?></span>
+                <h3 class="item-title line1"><a href="<?php echo esc_url($permalink); ?>" title="<?php echo esc_attr($title); ?>" target="_blank"><?php echo esc_html($title); ?><span class="app-v text-xs"> - <?php echo $version ? esc_html($version) : '最新'; ?></span></a></h3>
+                <div class="app-content mt-auto">
+                    <div class="text-muted text-xs line1"><?php echo esc_html(wp_trim_words($post->post_content, 10)); ?></div>
                 </div>
             </div>
-        </a>
-    </div>
-    <?php
+        </div>
+        <?php
+    } else {
+        // sites：style-sites-default 紧凑网址卡（本地favicon + 模糊背景）
+        $fav_url = function_exists('theme_get_local_favicon') ? theme_get_local_favicon($pid) : '';
+        if ($fav_url) {
+            $thumb = $fav_url;
+        }
+        $site_url = theme_get_site_url($pid);
+        ?>
+        <div class="posts-item sites-item d-flex style-sites-default post-<?php echo (int) $pid; ?> muted-bg br-md ajax-item no-go-ico">
+            <a href="<?php echo esc_url($permalink); ?>" target="_blank" data-id="<?php echo (int) $pid; ?>" data-url="<?php echo esc_url($site_url); ?>" class="sites-body" title="<?php echo esc_attr($title); ?>">
+                <div class="item-header">
+                    <div class="item-media">
+                        <div class="blur-img-bg lazy-bg"<?php echo $fav_url ? ' data-bg="' . esc_url($fav_url) . '"' : ''; ?>></div>
+                        <div class="item-image">
+                            <img class="fill-cover sites-icon" src="<?php echo esc_url($thumb); ?>" height="auto" width="auto" alt="<?php echo esc_attr($title); ?>">
+                        </div>
+                    </div>
+                </div>
+                <div class="item-body overflow-hidden d-flex flex-column flex-fill">
+                    <h3 class="item-title line1"><b><?php echo esc_html($title); ?></b></h3>
+                    <div class="line1 text-muted text-xs"><?php echo esc_html(wp_trim_words($post->post_content, 15)); ?></div>
+                </div>
+            </a>
+            <div class="sites-tags"></div>
+        </div>
+        <?php
+    }
 }
 
 add_action('wp_ajax_theme_ranking_list', 'theme_ajax_ranking_list');
@@ -5053,11 +5239,10 @@ function theme_ajax_ranking_list() {
     $type = isset($_POST['type']) ? sanitize_key($_POST['type']) : 'sites';
     $range = isset($_POST['range']) ? sanitize_key($_POST['range']) : 'today';
     $page = isset($_POST['page']) ? max(1, (int) $_POST['page']) : 1;
-    $data = theme_get_ranking_items($type, $range, $page, 20);
+    $data = theme_get_ranking_items($type, $range, $page, 16);
     ob_start();
-    $rank = ($data['page'] - 1) * $data['per_page'] + 1;
     foreach ($data['posts'] as $p) {
-        theme_render_ranking_row($p, $rank++, $type, isset($data['views_map'][$p->ID]) ? $data['views_map'][$p->ID] : 0);
+        theme_render_ranking_row($p, $type);
     }
     $html = ob_get_clean();
     wp_send_json_success(array(

@@ -271,77 +271,7 @@
             </div>
             <div class="sidebar sidebar-tools d-none d-lg-block">
                 <div class="theiaStickySidebar">
-                    <div class="card io-sidebar-widget io-widget-about-website">
-                        <div class="about-website-body">
-                            <?php
-                            $default_cover = 'https://cdn2.iocdn.cc/gh/owen0o0/ioStaticResources@master/banner/wHoOcfQGhqvlUkd.jpg';
-                            $about_cover = get_option('theme_settings')['theme_about_cover'] ?? $default_cover;
-                            $cover_class = 'about-cover bg-image media-bg p-2';
-                            $cover_attr = '';
-                            if (!empty($about_cover)) {
-                                $cover_attr = ' data-bg="' . esc_url($about_cover) . '"';
-                            } else {
-                                $cover_class .= ' fx-bg';
-                            }
-                            ?>
-                            <div class="<?php echo esc_attr($cover_class); ?>"<?php echo $cover_attr; ?>>
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-md">
-                                        <img class="avatar lazy unfancybox" src="https://ui-avatars.com/api/?name=<?php echo urlencode(get_bloginfo('name')); ?>&background=8618db&color=fff&size=64" height="auto" width="auto" alt="<?php bloginfo('name'); ?>">
-                                    </div>
-                                    <div class="flex-fill overflow-hidden ml-2">
-                                        <div class="text-md"><?php bloginfo('name'); ?></div>
-                                        <div class="text-xs line1 mt-1"><?php bloginfo('description'); ?></div>
-                                    </div>
-                                    <div class="add-to-favorites text-sm">
-                                        <a href="javascript:;" class="add-favorites" data-toggle="tooltip" title="按住拖入收藏夹">
-                                            <i class="iconfont icon-add"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="row no-gutters social-icon mt-2">
-                                    <?php
-                                    $social_options = get_option('theme_settings');
-                                    $social_wechat = $social_options['theme_social_wechat'] ?? '';
-                                    $social_qq = $social_options['theme_social_qq'] ?? '';
-                                    $social_weibo = $social_options['theme_social_weibo'] ?? '';
-                                    $social_github = $social_options['theme_social_github'] ?? '';
-                                    if ($social_wechat) : ?>
-                                    <div class="col"><a href="javascript:;" data-toggle="tooltip" data-placement="top" data-html="true" title='<img src="<?php echo esc_url($social_wechat); ?>" height="100" width="100">' rel="external nofollow"><i class="iconfont icon-wechat icon-lg"></i></a></div>
-                                    <?php endif;
-                                    if ($social_qq) : ?>
-                                    <div class="col"><a href="<?php echo esc_url($social_qq); ?>" target="_blank" data-toggle="tooltip" data-placement="top" title="QQ" rel="external nofollow"><i class="iconfont icon-qq icon-lg"></i></a></div>
-                                    <?php endif;
-                                    if ($social_weibo) : ?>
-                                    <div class="col"><a href="<?php echo esc_url($social_weibo); ?>" target="_blank" data-toggle="tooltip" data-placement="top" title="微博" rel="external nofollow"><i class="iconfont icon-weibo icon-lg"></i></a></div>
-                                    <?php endif;
-                                    if ($social_github) : ?>
-                                    <div class="col"><a href="<?php echo esc_url($social_github); ?>" target="_blank" data-toggle="tooltip" data-placement="top" title="GitHub" rel="external nofollow"><i class="iconfont icon-github icon-lg"></i></a></div>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                            <div class="about-meta mt-2">
-                                <div class="posts-row">
-                                    <div class="col-1a tips-box vc-l-theme btn-outline bg-no-a">
-                                        <div class="text-xl"><?php echo theme_get_total_sites(); ?></div>
-                                        <div class="text-ss">收录网址</div>
-                                    </div>
-                                    <div class="col-3a tips-box vc-l-blue btn-outline bg-no-a">
-                                        <div class="text-xl"><?php echo theme_get_total_posts(); ?></div>
-                                        <div class="text-ss">收录文章</div>
-                                    </div>
-                                    <div class="col-3a tips-box vc-l-green btn-outline bg-no-a">
-                                        <div class="text-xl"><?php echo theme_get_total_apps(); ?></div>
-                                        <div class="text-ss">收录软件</div>
-                                    </div>
-                                    <div class="col-3a tips-box vc-l-red btn-outline bg-no-a">
-                                        <div class="text-xl"><?php echo theme_get_total_books(); ?></div>
-                                        <div class="text-ss">收录书籍</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <?php theme_render_about_website_widget(); ?>
                     <?php theme_render_currency_widget(); ?>
                     <?php theme_render_hotlist_widget(); ?>
                     <?php theme_render_hotposts_widget(); ?>

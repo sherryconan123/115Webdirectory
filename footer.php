@@ -232,6 +232,10 @@ jQuery(function($) {
 });
 </script>
 <?php endif; ?>
+<?php if (!empty($theme_footer_options['theme_footer_statistics'])) : ?>
+<!-- 流量统计代码 -->
+<?php echo $theme_footer_options['theme_footer_statistics']; ?>
+<?php endif; ?>
 <?php wp_footer(); ?>
 
 <!-- 搜索弹窗 -->

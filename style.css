@@ -4,7 +4,7 @@ Theme URI: https://www.115.la/
 Author: 115la
 Author URI: https://www.115.la/
 Description: 115啦网址导航主题
-Version: 5.86
+Version: 5.92
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: 115theme
@@ -506,3 +506,6 @@ Text Domain: 115theme
     .io-lightbox-prev { left: 6px; }
     .io-lightbox-next { right: 6px; }
 }
+
+/* 排行榜页样式已内联在 page-rankings.php 模板中（根目录 style.css 不参与前台加载，修改前台样式请改模板内联 <style>） */
+
