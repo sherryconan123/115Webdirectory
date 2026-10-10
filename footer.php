@@ -58,6 +58,19 @@
         <i class="mode-ico iconfont icon-light"></i>
     </a>
 </div>
+<!-- 轻量 Tooltip 样式（全站通用：二维码/直达/点赞等，由 functions.php 兼容层 JS 驱动；style.css 不参与前台加载故必须内联输出） -->
+<style>
+.io-tooltip{position:absolute;z-index:1080;display:none;max-width:260px;font-size:.8rem;line-height:1.4;opacity:0;transition:opacity .15s;pointer-events:none}
+.io-tooltip.show{display:block;opacity:1}
+.io-tooltip-inner{background:rgba(33,37,41,.92);color:#fff;padding:6px 10px;border-radius:6px;text-align:center;word-break:break-word}
+.io-tooltip-inner a{color:#8fc1ff}
+.io-tooltip-arrow{position:absolute;width:8px;height:8px;background:rgba(33,37,41,.92);transform:rotate(45deg)}
+.placement-top .io-tooltip-arrow{bottom:-4px;left:50%;margin-left:-4px}
+.placement-bottom .io-tooltip-arrow{top:-4px;left:50%;margin-left:-4px}
+.placement-left .io-tooltip-arrow{right:-4px;top:50%;margin-top:-4px}
+.placement-right .io-tooltip-arrow{left:-4px;top:50%;margin-top:-4px}
+.io-tooltip img{display:block;border-radius:4px;background:#fff;padding:6px}
+</style>
 <?php if (!empty($theme_footer_options['theme_weather_on'])) : ?>
 <script>(function(){var s=document.createElement('script');s.src='https://cdn.sencdn.com/widget2/static/js/bundle.js';s.defer=true;document.body.appendChild(s);})();</script>
 <?php endif; ?>

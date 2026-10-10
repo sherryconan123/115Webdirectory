@@ -1,5 +1,5 @@
 <?php
-define('THEME_VERSION', '5.92');
+define('THEME_VERSION', '5.93');
 
 function theme_enqueue_scripts() {
     wp_enqueue_style('bootstrap-css', get_template_directory_uri() . '/css/bootstrap.min.css', array(), THEME_VERSION);
@@ -134,10 +134,18 @@ function theme_enqueue_scripts() {
     document.addEventListener('mouseout', function (e) { var el = tipTarget(e); if (el) hideTip(); });
     document.addEventListener('focusin', function (e) { var el = tipTarget(e); if (el) showTip(el); });
     document.addEventListener('focusout', function (e) { var el = tipTarget(e); if (el) hideTip(); });
-    /* 触摸设备：点击切换；点击页面其它处关闭（不阻止链接/按钮自身行为） */
+    /* 触摸设备：点击切换；点击页面其它处关闭。
+       注意：二维码等触发器本身是 <a href="javascript:..."> 伪链接，不能按真实链接处理，否则点击永远只触发隐藏 */
+    function isRealLink(el) {
+        var a = el.closest('a[href],button');
+        if (!a) return false;
+        var href = a.getAttribute('href') || '';
+        return !/^\s*javascript\s*:/i.test(href) && href !== '#';
+    }
     document.addEventListener('click', function (e) {
         var el = tipTarget(e);
-        if (el && !el.closest('a[href],button')) {
+        if (el && !isRealLink(el)) {
+            e.preventDefault();
             if (tipTrigger === el && tipEl && tipEl.classList.contains('show')) { hideTip(); }
             else { clearTimeout(tipTimer); showTip(el); }
         } else if (tipEl && tipEl.classList.contains('show')) {
